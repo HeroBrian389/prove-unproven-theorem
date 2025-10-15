@@ -1,0 +1,24 @@
+[
+  {
+    "id": "2025-10-14-selected-graph-theory",
+    "date": "2025-10-14",
+    "displayDate": "Oct 14, 2025",
+    "title": "Selected graph theory as the area of interest to work on.",
+    "summary": [
+      {
+        "type": "text",
+        "text": "The ambitious version of this project will be to solve an "
+      },
+      {
+        "type": "link",
+        "text": "Erdős open problem",
+        "href": "https://www.erdosproblems.com/lists",
+        "isExternal": true
+      },
+      {
+        "type": "text",
+        "text": "."
+      }
+    ]
+  }
+]
