@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu } from "lucide-react";
 
 import { sidebarItems } from "@/config/navigation";
@@ -8,8 +9,8 @@ import { useActiveSection } from "@/hooks/use-active-section";
 
 import { ProjectSnapshotCard } from "./project-snapshot-card";
 import { SidebarNavigation } from "./sidebar-navigation";
-import { StaticGraph } from "./static-graph";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "./ui/sheet";
+import { GraphAnimation } from "./graph-animation";
 
 interface PageScaffoldProps {
   activeItemId: string;
@@ -28,9 +29,7 @@ export function PageScaffold({
   return (
     <div className="relative w-full">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between pt-6 lg:hidden">
-          <StaticGraph variant="compact" className="w-24" />
-
+        <div className="flex items-center justify-end pt-6 lg:hidden">
           <Sheet open={isMobileNavOpen} onOpenChange={setIsMobileNavOpen}>
             <SheetTrigger asChild>
               <button
@@ -46,32 +45,43 @@ export function PageScaffold({
               side="top"
               className="h-dvh w-screen border-none bg-background px-6 pb-12 pt-16 sm:px-10"
             >
-              <div className="mx-auto flex h-full w-full max-w-md flex-col">
-                <div className="flex justify-center">
-                  <StaticGraph className="w-44" />
-                </div>
+              <SheetHeader className="sr-only">
+                <SheetTitle>Site navigation</SheetTitle>
+              </SheetHeader>
 
-                <div className="mt-10 flex-1 overflow-y-auto pb-6">
-                  <SidebarNavigation
-                    items={sidebarItems}
-                    activeItemId={activeItemId}
-                    activeChildId={activeChildId}
-                    onNavigate={() => setIsMobileNavOpen(false)}
-                  />
-                </div>
+              <AnimatePresence mode="wait">
+                {isMobileNavOpen ? (
+                  <motion.div
+                    key="mobile-nav"
+                    initial={{ opacity: 0, y: -16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -12 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="mx-auto flex h-full w-full max-w-md flex-col"
+                  >
+                    <div className="flex justify-center">
+                      <GraphAnimation />
+                    </div>
 
-                <p className="mt-auto text-center font-mono text-xs uppercase tracking-[0.4em] text-slate-400">
-                  Research navigator
-                </p>
-              </div>
+                    <div className="mt-10 flex-1 overflow-y-auto pb-6">
+                      <SidebarNavigation
+                        items={sidebarItems}
+                        activeItemId={activeItemId}
+                        activeChildId={activeChildId}
+                        onNavigate={() => setIsMobileNavOpen(false)}
+                      />
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
             </SheetContent>
           </Sheet>
         </div>
 
-        <div className="lg:grid lg:grid-cols-[18rem_minmax(0,1fr)_16rem] lg:gap-14 lg:pt-10">
+        <div className="lg:grid lg:grid-cols-[18rem_minmax(0,1fr)_20rem] lg:gap-16 lg:pt-10">
           <aside className="relative hidden lg:block">
             <div className="sticky top-10 flex h-[calc(100vh-5rem)] flex-col gap-8">
-              <StaticGraph className="w-full" />
+              <GraphAnimation />
               <SidebarNavigation
                 items={sidebarItems}
                 activeItemId={activeItemId}
