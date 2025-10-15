@@ -809,11 +809,11 @@ export function GraphAnimation() {
   }, [applyTemplate]);
 
   useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
+    let timeoutId: number | undefined;
 
     const schedule = () => {
       const delay = randomInRange(4200, 6400);
-      timeout = window.setTimeout(() => {
+      timeoutId = window.setTimeout(() => {
         let next = Math.floor(Math.random() * graphTemplates.length);
 
         if (graphTemplates.length > 1) {
@@ -830,7 +830,9 @@ export function GraphAnimation() {
     schedule();
 
     return () => {
-      window.clearTimeout(timeout);
+      if (typeof timeoutId === "number") {
+        window.clearTimeout(timeoutId);
+      }
     };
   }, [applyTemplate]);
 
@@ -1029,4 +1031,3 @@ export function GraphAnimation() {
     </div>
   );
 }
-

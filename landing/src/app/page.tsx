@@ -55,8 +55,16 @@ export default function Home() {
           </p>
           <p>
             However, when we look at frontier science research, these models are equivalent to
-            a capable undergraduate student. Leading mathematicians like Terence Tao are
-            sceptical of their ability to contribute meaningfully to mathematical research.
+            a capable undergraduate student. Leading mathematicians like{" "}
+            <a
+              href="https://mathstodon.xyz/@tao/115351400633010670?fbclid=IwY2xjawNZuldleHRuA2FlbQIxMABicmlkETFIb1lBRjY0dVdWQTZYbXJEAR6v9bA8mnw8xEsmwVsPrJPXYydgjd5BoSOnvYtKbSJDamWai-av5tWX6eDAYA_aem_iiItlSLTIk3qZLHbqIQS0g"
+              className="text-sky-600 underline decoration-sky-200 underline-offset-4 transition hover:text-sky-700"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Terence Tao
+            </a>{" "}
+            are sceptical of their ability to contribute meaningfully to mathematical research.
           </p>
           <p>
             The goal of this project is to assess where the frontier AI models and scientific

@@ -6,7 +6,7 @@ const DEFAULT_THRESHOLD = Object.freeze([0, 0.2, 0.4, 0.6]);
 
 interface UseActiveSectionOptions {
   rootMargin?: string;
-  threshold?: number[];
+  threshold?: ReadonlyArray<number>;
 }
 
 export function useActiveSection(
