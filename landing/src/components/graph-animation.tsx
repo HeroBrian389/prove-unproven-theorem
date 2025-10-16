@@ -734,10 +734,25 @@ const createEdgeState = (template: GraphTemplate): EdgeState[] =>
     dashed: edge.dashed ?? false,
   }));
 
+const graphAnimationPersistence = {
+  activeTemplateIndex: 0,
+};
+
 export function GraphAnimation() {
-  const [activeTemplateIndex, setActiveTemplateIndex] = useState(0);
-  const [nodes, setNodes] = useState<NodeState[]>(() => createNodeState(graphTemplates[0]));
-  const [edges, setEdges] = useState<EdgeState[]>(() => createEdgeState(graphTemplates[0]));
+  const initialTemplateIndex =
+    graphAnimationPersistence.activeTemplateIndex ?? 0;
+  const initialTemplate =
+    graphTemplates[initialTemplateIndex] ?? graphTemplates[0];
+
+  const [activeTemplateIndex, setActiveTemplateIndex] = useState(
+    initialTemplateIndex,
+  );
+  const [nodes, setNodes] = useState<NodeState[]>(() =>
+    createNodeState(initialTemplate),
+  );
+  const [edges, setEdges] = useState<EdgeState[]>(() =>
+    createEdgeState(initialTemplate),
+  );
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
@@ -789,13 +804,19 @@ export function GraphAnimation() {
   }, [pointerPosition]);
 
   const applyTemplate = useCallback((index: number) => {
-    const template = graphTemplates[index];
-    templateIndexRef.current = index;
-    setActiveTemplateIndex(index);
+    const safeIndex = index % graphTemplates.length;
+    const template = graphTemplates[safeIndex] ?? graphTemplates[0];
+    templateIndexRef.current = safeIndex;
+    graphAnimationPersistence.activeTemplateIndex = safeIndex;
+    setActiveTemplateIndex(safeIndex);
     setNodes(createNodeState(template));
     setEdges(createEdgeState(template));
     setHoveredNode(null);
   }, []);
+
+  useEffect(() => {
+    graphAnimationPersistence.activeTemplateIndex = activeTemplateIndex;
+  }, [activeTemplateIndex]);
 
   useEffect(() => {
     const kickoff = window.setTimeout(() => {
