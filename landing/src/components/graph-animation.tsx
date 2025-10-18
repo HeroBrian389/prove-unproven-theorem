@@ -28,9 +28,10 @@ type NodeState = {
   description: string;
 };
 
-type HoveredNode = {
+type TooltipContent = {
   label: string;
   description: string;
+  source: "card" | "node";
 };
 
 type TemplateNode = {
@@ -755,8 +756,9 @@ export function GraphAnimation() {
   );
 
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const [hoveredNode, setHoveredNode] = useState<HoveredNode | null>(null);
+  const [hoveredNode, setHoveredNode] = useState<TooltipContent | null>(null);
   const [pointerPosition, setPointerPosition] = useState({ x: 0, y: 0 });
+  const [isPointerInside, setIsPointerInside] = useState(false);
 
   const templateIndexRef = useRef(activeTemplateIndex);
 
@@ -782,7 +784,11 @@ export function GraphAnimation() {
       x: (node.x / 100) * rect.width,
       y: (node.y / 100) * rect.height,
     });
-    setHoveredNode({ label: node.label, description: node.description });
+    setHoveredNode({
+      source: "node",
+      label: node.label,
+      description: node.description,
+    });
   }, []);
 
   const tooltipPosition = useMemo(() => {
@@ -870,11 +876,62 @@ export function GraphAnimation() {
     [activeTemplateIndex]
   );
 
+  const baseTooltip = useMemo<TooltipContent>(() => {
+    const readableName = activeTemplateName.replace("-", " ").trim();
+    const label = readableName ? `${readableName} layout` : "Graph animation";
+    const description = readableName
+      ? `Currently showcasing the ${readableName} graph layout. Hover vertices to explore their roles.`
+      : "Currently showcasing an animated graph layout. Hover vertices to explore their roles.";
+    return {
+      source: "card",
+      label,
+      description,
+    };
+  }, [activeTemplateName]);
+
+  const ensureDefaultTooltip = useCallback(
+    (force = false) => {
+      setHoveredNode((current) => {
+        if (!force && current?.source === "node") {
+          return current;
+        }
+        if (
+          current?.source === "card" &&
+          current.label === baseTooltip.label &&
+          current.description === baseTooltip.description
+        ) {
+          return current;
+        }
+        return baseTooltip;
+      });
+    },
+    [baseTooltip],
+  );
+
+  useEffect(() => {
+    if (!isPointerInside) {
+      return;
+    }
+    ensureDefaultTooltip();
+  }, [ensureDefaultTooltip, isPointerInside]);
+
   return (
     <div
       ref={containerRef}
       className="relative overflow-hidden rounded-2xl border border-zinc-200/70 bg-zinc-50/70 p-4 shadow-sm backdrop-blur-sm"
-      onPointerLeave={() => setHoveredNode(null)}
+      onPointerEnter={(event) => {
+        setIsPointerInside(true);
+        updateTooltipPosition(event);
+        ensureDefaultTooltip();
+      }}
+      onPointerMove={(event) => {
+        updateTooltipPosition(event);
+        ensureDefaultTooltip();
+      }}
+      onPointerLeave={() => {
+        setIsPointerInside(false);
+        setHoveredNode(null);
+      }}
     >
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(14,165,233,0.16),transparent_55%),radial-gradient(circle_at_70%_70%,rgba(125,211,252,0.18),transparent_60%)]" />
       <svg
@@ -882,7 +939,13 @@ export function GraphAnimation() {
         className="relative h-48 w-full text-zinc-400"
         aria-hidden="true"
         onPointerMove={updateTooltipPosition}
-        onPointerLeave={() => setHoveredNode(null)}
+        onPointerLeave={() => {
+          if (isPointerInside) {
+            ensureDefaultTooltip(true);
+          } else {
+            setHoveredNode(null);
+          }
+        }}
       >
         <motion.circle
           cx={50}
@@ -988,7 +1051,11 @@ export function GraphAnimation() {
                   return;
                 }
                 updateTooltipPosition(event);
-                setHoveredNode({ label: node.label, description: node.description });
+                setHoveredNode({
+                  source: "node",
+                  label: node.label,
+                  description: node.description,
+                });
               }}
               onPointerMove={(event) => {
                 if (!node.visible) {
@@ -996,7 +1063,13 @@ export function GraphAnimation() {
                 }
                 updateTooltipPosition(event);
               }}
-              onPointerLeave={() => setHoveredNode(null)}
+              onPointerLeave={() => {
+                if (isPointerInside) {
+                  ensureDefaultTooltip(true);
+                } else {
+                  setHoveredNode(null);
+                }
+              }}
               onFocus={(event: ReactFocusEvent<SVGCircleElement>) => {
                 event.preventDefault();
                 if (!node.visible) {
@@ -1004,7 +1077,13 @@ export function GraphAnimation() {
                 }
                 focusTooltipForNode(node);
               }}
-              onBlur={() => setHoveredNode(null)}
+              onBlur={() => {
+                if (isPointerInside) {
+                  ensureDefaultTooltip(true);
+                } else {
+                  setHoveredNode(null);
+                }
+              }}
               role="button"
               tabIndex={node.visible ? 0 : -1}
               aria-label={`${node.label}: ${node.description}`}

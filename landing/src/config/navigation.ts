@@ -24,18 +24,6 @@ export const sidebarItems: SidebarNavItem[] = [
     title: "About me",
     description: "Background, collaborators, and tools.",
     href: "/about-me",
-    children: [
-      {
-        id: "about-profile",
-        title: "Profile & collaborators",
-        href: "/about-me#about-profile",
-      },
-      {
-        id: "about-collaborators",
-        title: "Collaborators",
-        href: "/about-me#about-collaborators",
-      },
-    ],
   },
   {
     id: "how-you-can-help",

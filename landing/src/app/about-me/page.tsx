@@ -8,13 +8,13 @@ export default function AboutMePage() {
         className="space-y-6 scroll-mt-24 border-b border-slate-200 pb-16"
       >
         <header className="space-y-2">
-          <h1 className="font-serif text-4xl text-slate-900">People & tooling</h1>
+          <h1 className="font-serif text-4xl text-slate-900">About me</h1>
           <p className="font-sans text-sm text-slate-500">
-            Quick context on the collaborators, background, and systems involved in the project.
+            A bit about me and the tools I'm working with.
           </p>
         </header>
 
-        <div className="grid gap-6 md:grid-cols-2">
+
           <div
             id="about-profile"
             className="rounded-2xl border border-slate-200 bg-white/90 p-6 shadow-sm"
@@ -23,12 +23,7 @@ export default function AboutMePage() {
               Brian Kelleher
             </h2>
             <p className="mt-3 text-sm text-slate-600">
-              Maths undergrad at Trinity College Dublin. Builder of AI-native products including Microdoc,
-              used by clinicians across Ireland, the UK, and the US.
-            </p>
-            <p className="mt-4 text-sm text-slate-600">
-              During the Edge City fellowship I&apos;ll orchestrate GPT-5 family models and bespoke toolchains
-              to pursue new results in graph theory and adjacent areas.
+              Founder and CEO of Microdoc, AI-powered dictation for doctors, used by doctors across Ireland, the UK, and the US.
             </p>
           </div>
 
@@ -40,11 +35,9 @@ export default function AboutMePage() {
               Collaborators
             </h2>
             <p className="mt-3 text-sm text-slate-600">
-              Fellows and advisors from Edge City, Oxford, and Trinity will help steer the mathematical agenda
-              and pressure-test the AI pipelines as they evolve.
+              Fellows and advisors from Edge City, Oxford, and Trinity will guide and evaluate the AI-generated mathematics as this project evolves.
             </p>
           </div>
-        </div>
       </section>
     </PageScaffold>
   );
